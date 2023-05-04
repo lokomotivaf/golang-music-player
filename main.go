@@ -22,7 +22,7 @@ type SongDetail struct {
 }
 
 var PORT = 5420
-var DIRECTORY = "music2"
+var DIRECTORY = "music"
 var FILES, _ = os.ReadDir(DIRECTORY)
 var AUTHPASSWORD = "Super-tezke-heslo"
 
@@ -154,7 +154,7 @@ func isValidId(idString string) (int, error) {
 		return 0, err
 	}
 
-	if id < 0 || id > len(FILES) {
+	if id < 0 || id > (len(FILES)-1) {
 		return 0, fmt.Errorf("id out of range")
 	}
 
