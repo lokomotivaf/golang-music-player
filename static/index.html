@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Super music player</title>
+    <script defer="defer" src="js/app.js"></script>
+    <link href="css/styles.css" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="img/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="img/icons/favicon-16x16.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#262626">
+    <meta name="apple-mobile-web-app-capable" content="no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Super music player">
+    <link rel="apple-touch-icon"
+          href="img/icons/apple-touch-icon-152x152.png">
+    <meta name="msapplication-TileImage"
+          content="img/icons/msapplication-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#262626">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+<body onkeydown="changeShowedElements(event)">
+<div class="search">
+    <input id="search-filter" oninput="filterArray()" placeholder="Search"
+           type="text">
+</div>
+<div class="filters">
+    <p id="filters-id" onclick="setSort(event, 'index')" class="index active">
+        #</p>
+    <p id="filters-title" onclick="setSort(event, 'title')" class="title">
+        Title</p>
+    <p id="filters-artist" onclick="setSort(event, 'artist')" class="artist">
+        Artist</p>
+    <p id="filters-album" onclick="setSort(event, 'album')" class="album">
+        Album</p>
+    <p id="filters-length" onclick="setSort(event, 'length')" class="length">
+        Length</p>
+</div>
+<main id="songListContainer">
+</main>
+<div class="preview">
+    <img ondblclick="setPreviewActive(event)" id="preview-cover" class="cover"
+         src="data:image/png;base64," alt="cover" style="display: none;">
+    <h1 id="preview-title" class="title"></h1>
+    <h2 id="preview-artist" class="artist"></h2>
+</div>
+<footer>
+    <audio id="audio-player" controls=""></audio>
+    <div class="buttons">
+        <button class="shuffle">
+            <img id="shuffle-active-image" src="/static/img/active-shuffle.svg"
+                 style="display: none;" onclick="shuffle()"
+                 alt="active-shuffle">
+            <img id="shuffle-image" src="/static/img/shuffle.svg"
+                 onclick="shuffle()" alt="active-shuffle">
+        </button>
+        <button class="buttonPrevious" onclick="previousSong()">
+            <img src="/static/img/left.svg" alt="arrow-left">
+        </button>
+        <button onclick="playButton()" class="playButton">
+            <img src="/static/img/pause.svg" id="pause-image"
+                 style="display: none" alt="pause-button">
+            <img src="/static/img/play.svg" id="play-image" alt="pause-button">
+        </button>
+        <button class="buttonNext" onclick="nextSong()">
+            <img src="/static/img/right.svg" alt="arrow-right">
+        </button>
+    </div>
+    <div id="timeline" onclick="setTime(event)" class="timeline">
+        <div id="active-timeline" class="activeTimeline"></div>
+        <p id="timeline-currentTime" class="currentTime">1:38</p>
+        <p id="timeline-length" class="length">3:49</p>
+        <input class="volume" type="range" name="">
+    </div>
+</footer>
+</body>
+</html>

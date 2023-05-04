@@ -1,0 +1,93 @@
+/*preview*/
+.preview {
+	position: absolute;
+	width: 220px;
+	height: 300px;
+	left: 0;
+	bottom: 0;
+	z-index: 100;
+}
+
+.preview img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 220px;
+}
+
+.preview h1 {
+	position: absolute;
+	display: block;
+	top: 230px;
+	left: 20px;
+	height: 19px;
+	overflow: hidden;
+	font-size: 16px;
+}
+
+.preview h2 {
+	position: absolute;
+	display: block;
+	top: 252px;
+	left: 20px;
+	font-weight: 400;
+	font-size: 16px;
+	height: 36px;
+	overflow: hidden;
+}
+
+.active .preview {
+	transition: left 0.5s, bottom 0.5s, width 0.5s, height 0.5s;
+	left: 50%;
+	bottom: 50%;
+	transform: translate(-50%, 50%);
+	max-width: 90vw;
+	width: 600px;
+	height: calc(600px + 100px);
+	max-height: calc(90vw + 100px);
+}
+
+.active .preview img {
+	width: 100%;
+	height: calc(100% - 100px);
+}
+
+.active .preview h1 {
+	display: block;
+	font-size: 20px;
+	top: unset;
+	bottom: 70px;
+	left: 0;
+}
+
+.active .preview h2 {
+	display: block;
+	font-size: 16px;
+	top: unset;
+	bottom: 52px;
+	left: 0;
+	height: unset;
+	overflow: unset;
+}
+
+@media only screen and (max-width: 800px) {
+	.preview {
+		bottom: 100px;
+		width: 110px;
+		height: 110px;
+	}
+
+	.preview h1 {
+		display: none;
+	}
+
+	.preview h2 {
+		display: none;
+	}
+
+	.preview img {
+		height: 100%;
+		width: 100%;
+	}
+}

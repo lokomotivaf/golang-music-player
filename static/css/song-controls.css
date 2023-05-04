@@ -1,0 +1,128 @@
+/*song controls*/
+audio {
+	position: absolute;
+	display: none;
+}
+
+footer {
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	height: 80px;
+	background-color: var(--block-color);
+}
+
+footer .timeline {
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%);
+	top: 56px;
+	width: 54%;
+	max-width: 640px;
+	height: 3px;
+	background-color: var(--text-primary-color);
+	cursor: pointer;
+}
+
+footer .timeline .activeTimeline {
+	width: 0;
+	height: 100%;
+	background-color: var(--accent-color);
+}
+
+footer .timeline .volume {
+	display: none;
+	transform: rotate(-90deg);
+	opacity: 1;
+	position: absolute;
+	right: -85px;
+	top: -20px;
+	width: 50px;
+	height: 10px;
+	-webkit-appearance: none;
+	background: var(--text-primary-color);
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+footer .timeline .volume::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	background: var(--accent-color);
+	cursor: pointer;
+	box-shadow: -407px 0 0 400px var(--accent-color);
+}
+
+footer .timeline p {
+	position: absolute;
+	width: 50px;
+	top: -10px;
+}
+
+footer .timeline .currentTime {
+	text-align: right;
+	left: -70px;
+}
+
+footer .timeline .length {
+	text-align: left;
+	right: -70px;
+}
+
+footer .buttons {
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%);
+	top: 10px;
+	width: 260px;
+	height: 30px;
+}
+
+footer .buttons button {
+	cursor: pointer;
+	position: absolute;
+	display: block;
+	background: none;
+	outline: none;
+	border: none;
+	height: 17.4px;
+	width: 19px;
+	top: 9px;
+}
+
+footer .buttons button img {
+	height: 100%;
+	width: 100%;
+}
+
+footer .buttons .shuffle {
+	left: 0;
+}
+
+footer .buttons .buttonPrevious {
+	left: 60px;
+}
+
+footer .buttons .buttonNext {
+	right: 60px;
+}
+
+footer .buttons .playButton {
+	left: 50%;
+	top: 5px;
+	transform: translate(-6.5px, 0);
+	width: 20px;
+	height: 24px;
+}
+
+@media only screen and (max-width: 800px) {
+	main {
+		height: calc(-80px + 100vh - 100px);
+	}
+
+	footer {
+		height: 100px
+	}
+}
