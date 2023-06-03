@@ -18,6 +18,7 @@ audioPlayer.addEventListener("timeupdate", setTimeline);
 
 let currentSoundBufferBase64 = '';
 let isPlaying = false; // for loading
+let songCache = new Map();
 
 //buttons
 let paused = true;
@@ -106,42 +107,81 @@ function playSong(id) {
 	isPlaying = false;
 	currentSoundBufferBase64 = '';
 	audioPlayer.currentTime = 0;
-	authorizedFetch(`/songDetail/${id}`, {signal: fetchSongController?.signal}).then(response => {
-		response.json().then(data => {
-			currentSongIndex = data.Index;
-			previewTitle.innerText = data.Title;
-			previewArtist.innerText = data.Artist;
-			previewCover.src = `data:image/png;base64,${data.ImageData}`;
-			previewCover.style.display = 'block';
-			timelineLength.innerText = secondsToTime(data.Length);
-			currentSongLength = data.Length;
-			newMediaSessionMetadata(data.Title, data.Artist, data.Album);
-			renderSongList();
-		}).catch(err => {
-				console.log(err);
-			}
-		);
-	});
 
-	authorizedFetch(`/song/${id}`, {signal: fetchSongController?.signal}).then(response => {
-		const reader = response.body.getReader();
-		reader.read().then(function processResult(result) {
-			currentSoundBufferBase64 += new TextDecoder().decode(result.value);
-			if (result.done) {
-				console.log('Stream complete');
-				setNewSource();
+	if (songCache.has(id) && songCache.get(id).title && songCache.get(id).base64Buffer) {
+		const cachedSong = songCache.get(id);
+		currentSoundBufferBase64 = cachedSong.base64Buffer;
+		currentSongIndex = cachedSong.index;
+		previewTitle.innerText = cachedSong.title;
+		previewArtist.innerText = cachedSong.artist;
+		previewCover.src = cachedSong.cover;
+		timelineLength.innerText = secondsToTime(cachedSong.length);
+		currentSongLength = cachedSong.length;
+		newMediaSessionMetadata(cachedSong.title, cachedSong.artist, cachedSong.album);
+		renderSongList();
+		setNewSource();
+	} else {
+		authorizedFetch(`/songDetail/${id}`, {signal: fetchSongController?.signal}).then(response => {
+			response.json().then(data => {
+				currentSongIndex = data.Index;
+				previewTitle.innerText = data.Title;
+				previewArtist.innerText = data.Artist;
+				previewCover.src = `data:image/png;base64,${data.ImageData || 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg=='}`;
+				previewCover.style.display = 'block';
+				timelineLength.innerText = secondsToTime(data.Length);
+				currentSongLength = data.Length;
+				newMediaSessionMetadata(data.Title, data.Artist, data.Album);
 
-				return;
-			}
-			if (currentSoundBufferBase64.length > 2100000 && !isPlaying) {
-				setNewSource();
-				isPlaying = true;
-			}
-			return reader.read().then(processResult);
+				const cachedSong = songCache.get(id)
+
+				songCache.set(id, {
+					index: data.Index,
+					title: data.Title,
+					artist: data.Artist,
+					cover: `data:image/png;base64,${data.ImageData || 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg=='}`,
+					length: data.Length,
+					base64Buffer: cachedSong?.base64Buffer
+				})
+				renderSongList();
+			}).catch(err => {
+					console.log(err);
+				}
+			);
 		});
-	}).catch(error => {
-		console.error(error);
-	});
+
+		authorizedFetch(`/song/${id}`, {signal: fetchSongController?.signal}).then(response => {
+			const reader = response.body.getReader();
+			reader.read().then(function processResult(result) {
+				currentSoundBufferBase64 += new TextDecoder().decode(result.value);
+				if (result.done) {
+					console.log('Stream complete');
+					setNewSource();
+
+					const cachedSong = songCache.get(id)
+
+					songCache.set(id, {
+						index: cachedSong?.index,
+						title: cachedSong?.title,
+						artist: cachedSong?.artist,
+						cover: cachedSong?.cover,
+						length: cachedSong?.length,
+						base64Buffer: currentSoundBufferBase64
+					});
+
+					return;
+				}
+
+				if (currentSoundBufferBase64.length > 2100000 && !isPlaying) {
+					setNewSource();
+					isPlaying = true;
+				}
+
+				return reader.read().then(processResult);
+			});
+		}).catch(error => {
+			console.error(error);
+		});
+	}
 }
 
 function setTimeline() {
@@ -164,12 +204,12 @@ function renderSongList() {
 	songListContainer.innerHTML = '';
 	filteredSongList.forEach(song => {
 		const html = `
-          <div onclick="playSong(${song.Index})" class="eachSong ${song.Index == currentSongIndex ? 'active' : ''}">
+          <div oncontextmenu="openContextMenuForSong(event, ${song.Index})" onclick="playSong(${song.Index})" class="eachSong ${song.Index == currentSongIndex ? 'active' : ''}">
             <p class="index">${song.Index}</p>
-            <img src="data:image/png;base64,${song.ImageData}" alt="song">
+            <img src="data:image/png;base64,${song.ImageData || 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg=='}" alt="song">
             <p class="title">${song.Title}</p>
-            <p class="artist">${song.Artist}</p>
-            <p class="album">${song.Album}</p>
+            <p class="artist">${song.Artist || 'Couln\'t fetch artist'}</p>
+            <p class="album">${song.Album || 'Couln\'t fetch album'}</p>
             <p class="length">${secondsToTime(song.Length)}</p>
           </div>
         `;

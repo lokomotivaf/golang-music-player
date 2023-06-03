@@ -14,7 +14,7 @@ main .active {
 }
 
 main .active .title {
-	color: var(--text-primary-color);
+	color: var(--accent-color)
 }
 
 main .eachSong {

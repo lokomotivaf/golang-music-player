@@ -52,14 +52,20 @@ func buildSongDetail(id int, filePath string, playlistLength int) (*SongDetail, 
 		return nil, err
 	}
 
-	return &SongDetail{
+	var songDetail = SongDetail{
 		Index:          id,
 		Title:          tag.Title(),
 		Artist:         tag.Artist(),
 		Length:         int(float64(decodedStream.Length())/4) / decodedStream.SampleRate(),
 		ImageData:      base64.StdEncoding.EncodeToString(getImageFromId3v2Tag(tag)),
 		PlaylistLength: playlistLength,
-	}, nil
+	}
+
+	if tag.Title() == "" {
+		songDetail.Title = file.Name()
+	}
+
+	return &songDetail, nil
 }
 
 func buildSongListEntry(id int, filePath string) (*SongDetail, error) {
@@ -70,14 +76,20 @@ func buildSongListEntry(id int, filePath string) (*SongDetail, error) {
 		return nil, err
 	}
 
-	return &SongDetail{
+	var songDetail = SongDetail{
 		Index:     id,
 		Title:     tag.Title(),
 		Artist:    tag.Artist(),
 		Album:     tag.Album(),
 		Length:    int(float64(decodedStream.Length())/4) / decodedStream.SampleRate(),
 		ImageData: base64.StdEncoding.EncodeToString(getSmallImageFromId3v2Tag(tag)),
-	}, nil
+	}
+
+	if tag.Title() == "" {
+		songDetail.Title = file.Name()
+	}
+
+	return &songDetail, nil
 }
 
 func getNameArrayFromDirEntry(entry []os.DirEntry) []string {
