@@ -24,7 +24,7 @@ type SongDetail struct {
 var PORT = 5420
 var DIRECTORY = "music"
 var FILES, _ = os.ReadDir(DIRECTORY)
-var AUTHPASSWORD = "Super-tezke-heslo"
+var AUTHPASSWORD = "123"
 
 func main() {
 	router := mux.NewRouter()
